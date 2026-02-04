@@ -1,13 +1,12 @@
 //inspired from https://github.com/drblgn/rabbit_wasm
 
-import util from "util";
+// import util from "util";
 import pixels from "image-pixels";
 import cryptoJs from "crypto-js";
 import http from "../../utils/http.js";
 const user_agent =
   "Mozilla/5.0 (X11; Linux x86_64; rv:133.0) Gecko/20100101 Firefox/133.0";
-import { webcrypto } from "crypto";
-const crypto = webcrypto;
+const crypto = globalThis.crypto;
 import { dataURL } from "../../configs/dataUrl.js";
 // import { v1_base_url } from "../../utils/base_v1.js";
 import { v4_base_url } from "../../utils/base_v4.js";
@@ -20,8 +19,13 @@ let referrer = "";
 
 function isDetached(buffer) {
   if (buffer.byteLength === 0) {
-    const formatted = util.format(buffer);
-    return formatted.includes("detached");
+    try {
+      // In some environments, we can detect detached by checking if we can create a view
+      new Uint8Array(buffer);
+      return false;
+    } catch (e) {
+      return true;
+    }
   }
   return false;
 }
@@ -143,7 +147,7 @@ function parse(text, func, func2) {
   }
   return (
     i !== len &&
-      (0 !== i && (text = text.slice(i)),
+    (0 !== i && (text = text.slice(i)),
       (parsedLen = func2(parsedLen, len, (len = i + 3 * text.length), 1) >>> 0),
       (encoded = getMemBuff().subarray(parsedLen + i, parsedLen + len)),
       (i += encode(text, encoded).written),
@@ -162,8 +166,8 @@ function isNull(test) {
 function getDataView() {
   return (dataView =
     dataView === null ||
-    isDetached(dataView.buffer) ||
-    dataView.buffer !== wasm.memory.buffer
+      isDetached(dataView.buffer) ||
+      dataView.buffer !== wasm.memory.buffer
       ? new DataView(wasm.memory.buffer)
       : dataView);
 }
@@ -252,11 +256,11 @@ async function QN(QP, Qn) {
       Object.assign(Qt, { bytes: QT }))
     : (Qt = await WebAssembly.instantiate(QP, Qn)) instanceof
       WebAssembly.Instance
-    ? {
+      ? {
         instance: Qt,
         module: QP,
       }
-    : Qt;
+      : Qt;
 }
 
 function initWasm() {
@@ -313,7 +317,7 @@ function initWasm() {
       __wbg_subarray_adc418253d76e2f1: function (index, num1, num2) {
         return addToStack(get(index).subarray(num1 >>> 0, num2 >>> 0));
       },
-      __wbg_randomFillSync_5c9c955aa56b6049: function () {},
+      __wbg_randomFillSync_5c9c955aa56b6049: function () { },
       __wbg_getRandomValues_3aa56aa6edec874c: function () {
         return applyToWindow(function (index1, index2) {
           get(index1).getRandomValues(get(index2));
@@ -356,21 +360,21 @@ function initWasm() {
           }
         }, arguments);
       },
-      __wbg_setfillStyle_59f426135f52910f: function () {},
-      __wbg_setshadowBlur_229c56539d02f401: function () {},
-      __wbg_setshadowColor_340d5290cdc4ae9d: function () {},
-      __wbg_setfont_16d6e31e06a420a5: function () {},
-      __wbg_settextBaseline_c3266d3bd4a6695c: function () {},
-      __wbg_drawImage_cb13768a1bdc04bd: function () {},
+      __wbg_setfillStyle_59f426135f52910f: function () { },
+      __wbg_setshadowBlur_229c56539d02f401: function () { },
+      __wbg_setshadowColor_340d5290cdc4ae9d: function () { },
+      __wbg_setfont_16d6e31e06a420a5: function () { },
+      __wbg_settextBaseline_c3266d3bd4a6695c: function () { },
+      __wbg_drawImage_cb13768a1bdc04bd: function () { },
       __wbg_getImageData_66269d289f37d3c7: function () {
         return applyToWindow(function () {
           return addToStack(image_data);
         }, arguments);
       },
-      __wbg_rect_2fa1df87ef638738: function () {},
-      __wbg_fillRect_4dd28e628381d240: function () {},
-      __wbg_fillText_07e5da9e41652f20: function () {},
-      __wbg_setProperty_5144ddce66bbde41: function () {},
+      __wbg_rect_2fa1df87ef638738: function () { },
+      __wbg_fillRect_4dd28e628381d240: function () { },
+      __wbg_fillText_07e5da9e41652f20: function () { },
+      __wbg_setProperty_5144ddce66bbde41: function () { },
       __wbg_createElement_03cf347ddad1c8c0: function () {
         return applyToWindow(function (index, decodeIndex, decodeIndexOffset) {
           return addToStack(canvas);
@@ -403,7 +407,7 @@ function initWasm() {
         let target = get(index).target;
         return isNull(target) ? 0 : addToStack(target);
       },
-      __wbg_addEventListener_f984e99465a6a7f4: function () {},
+      __wbg_addEventListener_f984e99465a6a7f4: function () { },
       __wbg_instanceof_HtmlCanvasElement_1e81f71f630e46bc: function () {
         return true;
       },
@@ -587,7 +591,7 @@ function initWasm() {
       __wbg_set_7d988c98e6ced92d: function (index, index2, val) {
         get(index).set(get(index2), val >>> 0);
       },
-      __wbindgen_debug_string: function () {},
+      __wbindgen_debug_string: function () { },
       __wbindgen_throw: function (index, offset) {
         throw new Error(decodeSub(index, offset));
       },
