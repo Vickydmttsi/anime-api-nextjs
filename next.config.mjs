@@ -1,5 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    output: 'standalone',
+    experimental: {
+        serverComponentsExternalPackages: ['cheerio', 'crypto-js'],
+    },
+    images: {
+        unoptimized: true,
+    },
     async headers() {
         return [
             {
