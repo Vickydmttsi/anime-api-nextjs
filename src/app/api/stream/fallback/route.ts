@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+export const runtime = 'edge';
 import { extractStreamingInfo } from '@/lib/api-logic/extractors/streamInfo.extractor.js';
 
 export async function GET(req: NextRequest) {

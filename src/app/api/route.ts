@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+export const runtime = 'edge';
 import { getHomeInfo } from '@/lib/api-logic/controllers/homeInfo.controller.js';
 
 export async function GET(req: NextRequest) {

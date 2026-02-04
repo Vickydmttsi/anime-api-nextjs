@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+export const runtime = 'edge';
 import { getRandomId } from '@/lib/api-logic/controllers/randomId.controller.js';
 
 export async function GET(req: NextRequest) {

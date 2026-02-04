@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+export const runtime = 'edge';
 import { getServers } from '@/lib/api-logic/controllers/servers.controller.js';
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {

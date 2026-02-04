@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+export const runtime = 'edge';
 import { search } from '@/lib/api-logic/controllers/search.controller.js';
 
 export async function GET(req: NextRequest) {
